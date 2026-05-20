@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>虹を駆ける</title>
+  <style>
+    :root {
+      --bg: #071126;
+      --panel: #101b32;
+      --panel2: #16223b;
+      --text: #f6f8ff;
+      --muted: #aab3c7;
+      --slot: #4b5268;
+      --slot-border: #66708a;
+      --active: #ffffff;
+      --danger: #ff6b6b;
+      --ok: #9fe6b8;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      touch-action: manipulation;
+    }
+
+    button {
+      font-family: inherit;
+      border: 0;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    .portrait-warning {
+      display: none;
+      width: 100vw;
+      height: 100dvh;
+      padding: 28px;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08), transparent 28%),
+        radial-gradient(circle at 80% 80%, rgba(120,160,255,0.12), transparent 34%),
+        var(--bg);
+    }
+
+    .portrait-card {
+      max-width: 420px;
+      padding: 28px 24px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 24px;
+      background: rgba(16, 27, 50, 0.82);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    }
+
+    .portrait-card h1 {
+      margin: 0 0 14px;
+      font-size: 26px;
+      letter-spacing: 0.06em;
+    }
+
+    .portrait-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .app {
+      width: 100vw;
+      height: 100dvh;
+      display: grid;
+      grid-template-rows: minmax(38px, 8dvh) 1fr minmax(84px, 22dvh);
+      background:
+        linear-gradient(120deg, rgba(255, 55, 55, 0.08), transparent 16%),
+        linear-gradient(150deg, rgba(255, 180, 35, 0.07), transparent 26%),
+        linear-gradient(210deg, rgba(80, 190, 255, 0.08), transparent 34%),
+        var(--bg);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
+      min-height: 38px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: rgba(5, 13, 30, 0.72);
+      position: relative;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: linear-gradient(90deg, #ef3b3b, #f28c28, #f5e84a, #4cc56d, #2d8cff, #3547d4, #8d4bd8);
+      opacity: 0.85;
+    }
+
+    .title {
+      font-size: clamp(18px, 2.2vw, 30px);
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: clamp(11px, 1.2vw, 14px);
+      white-space: nowrap;
+    }
+
+    .main {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 74fr 26fr;
+      gap: 10px;
+      padding: 10px max(12px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left));
+    }
+
+    .camera-panel,
+    .control-panel {
+      min-height: 0;
+      border-radius: 18px;
+      background: rgba(16, 27, 50, 0.78);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.23);
+      overflow: hidden;
+    }
+
+    .camera-panel {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #020712;
+      transform: translateZ(0);
+    }
+
+    .camera-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      text-align: center;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 45%),
+        #081226;
+      z-index: 3;
+    }
+
+    .camera-placeholder.hidden {
+      display: none;
+    }
+
+    .camera-placeholder p {
+      max-width: 520px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: clamp(13px, 1.3vw, 16px);
+    }
+
+    .start-button {
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: #f6f8ff;
+      color: #071126;
+      font-size: clamp(16px, 1.7vw, 22px);
+      font-weight: 800;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.32);
+    }
+
+    .guide {
+      position: absolute;
+      width: min(56dvh, 46vw);
+      aspect-ratio: 1 / 1;
+      border: 1.5px solid rgba(255,255,255,0.55);
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .camera-ready .guide {
+      opacity: 1;
+    }
+
+    .guide::before,
+    .guide::after {
+      content: "";
+      position: absolute;
+      inset: -1.5px;
+      background:
+        linear-gradient(#fff, #fff) left top / 28px 3px no-repeat,
+        linear-gradient(#fff, #fff) left top / 3px 28px no-repeat,
+        linear-gradient(#fff, #fff) right top / 28px 3px no-repeat,
+        linear-gradient(#fff, #fff) right top / 3px 28px no-repeat,
+        linear-gradient(#fff, #fff) left bottom / 28px 3px no-repeat,
+        linear-gradient(#fff, #fff) left bottom / 3px 28px no-repeat,
+        linear-gradient(#fff, #fff) right bottom / 28px 3px no-repeat,
+        linear-gradient(#fff, #fff) right bottom / 3px 28px no-repeat;
+      opacity: 0.8;
+    }
+
+    .control-panel {
+      padding: clamp(10px, 1.6vw, 22px);
+      display: grid;
+      grid-template-rows: auto 1fr auto auto auto;
+      gap: clamp(7px, 1.2vw, 14px);
+      align-items: center;
+      text-align: center;
+    }
+
+    .selected-label {
+      color: var(--muted);
+      font-size: clamp(11px, 1.2vw, 15px);
+      letter-spacing: 0.12em;
+    }
+
+    .selected-color {
+      font-size: clamp(26px, 5vw, 64px);
+      font-weight: 900;
+      line-height: 1;
+      text-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: clamp(11px, 1.15vw, 15px);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .capture-button {
+      width: 100%;
+      min-height: clamp(64px, 18dvh, 170px);
+      padding: 12px 10px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #ffffff, #dce5ff);
+      color: #071126;
+      font-size: clamp(18px, 2.8vw, 40px);
+      font-weight: 950;
+      line-height: 1.08;
+      box-shadow: 0 18px 34px rgba(0,0,0,0.32), inset 0 0 0 1px rgba(255,255,255,0.7);
+    }
+
+    .capture-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .progress {
+      font-size: clamp(18px, 2.4vw, 36px);
+      font-weight: 800;
+    }
+
+    .complete-message {
+      min-height: 1.4em;
+      color: var(--ok);
+      font-size: clamp(12px, 1.2vw, 16px);
+      font-weight: 700;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .small-button {
+      width: 100%;
+      padding: clamp(8px, 1.2vw, 13px) 8px;
+      border-radius: 14px;
+      background: var(--panel2);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--text);
+      font-size: clamp(12px, 1.15vw, 16px);
+      font-weight: 800;
+    }
+
+    .small-button.save {
+      background: linear-gradient(145deg, #265a42, #173927);
+      border-color: rgba(159,230,184,0.35);
+    }
+
+    .small-button:disabled {
+      opacity: 0.36;
+      cursor: not-allowed;
+    }
+
+    .roll {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      padding: 8px max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+      background: rgba(5, 13, 30, 0.78);
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .slot {
+      position: relative;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      border-radius: 16px;
+      border: 2px solid var(--slot-border);
+      background: var(--slot);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 8px 18px rgba(0,0,0,0.2);
+      transform: translateY(0) scale(1);
+      transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+    }
+
+    .slot.active {
+      border-color: var(--active);
+      box-shadow: 0 0 18px rgba(255,255,255,0.35), 0 12px 22px rgba(0,0,0,0.28);
+      transform: translateY(-4px) scale(1.015);
+      z-index: 2;
+    }
+
+    .slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .slot-name {
+      font-size: clamp(16px, 2.2vw, 34px);
+      font-weight: 900;
+      color: #f4f7ff;
+      letter-spacing: 0.08em;
+    }
+
+    .roll.complete {
+      animation: rollGlow 1.1s ease;
+    }
+
+    @keyframes rollGlow {
+      0% { box-shadow: inset 0 0 0 rgba(255,255,255,0); }
+      45% { box-shadow: inset 0 0 70px rgba(255,255,255,0.22); }
+      100% { box-shadow: inset 0 0 0 rgba(255,255,255,0); }
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(22dvh + 16px);
+      transform: translateX(-50%) translateY(18px);
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.72);
+      color: #fff;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 20;
+      white-space: nowrap;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    canvas {
+      display: none;
+    }
+
+    @media (orientation: portrait) {
+      .app { display: none; }
+      .portrait-warning { display: flex; }
+    }
+
+    @media (orientation: landscape) and (max-height: 500px) {
+      .app {
+        grid-template-rows: minmax(28px, 7dvh) 1fr minmax(68px, 24dvh);
+      }
+
+      header {
+        padding-left: max(10px, env(safe-area-inset-left));
+        padding-right: max(10px, env(safe-area-inset-right));
+      }
+
+      .title {
+        font-size: clamp(15px, 2vw, 22px);
+      }
+
+      .subtitle {
+        display: none;
+      }
+
+      .main {
+        gap: 7px;
+        padding: 7px max(8px, env(safe-area-inset-right)) 7px max(8px, env(safe-area-inset-left));
+        grid-template-columns: 76fr 24fr;
+      }
+
+      .camera-panel,
+      .control-panel {
+        border-radius: 12px;
+      }
+
+      .control-panel {
+        padding: 7px;
+        gap: 4px;
+        grid-template-rows: auto auto 1fr auto auto;
+      }
+
+      .selected-label,
+      .hint {
+        display: none;
+      }
+
+      .selected-color {
+        font-size: clamp(20px, 4.3dvh, 34px);
+      }
+
+      .capture-button {
+        min-height: 0;
+        height: 100%;
+        border-radius: 14px;
+        font-size: clamp(14px, 4.2dvh, 24px);
+      }
+
+      .progress {
+        font-size: clamp(14px, 3.5dvh, 22px);
+      }
+
+      .complete-message {
+        font-size: 11px;
+        min-height: 1.2em;
+      }
+
+      .action-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+      }
+
+      .small-button {
+        padding: 7px 4px;
+        border-radius: 10px;
+        font-size: 11px;
+      }
+
+      .roll {
+        gap: 5px;
+        padding: 6px max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+      }
+
+      .slot {
+        border-radius: 10px;
+      }
+
+      .slot.active {
+        transform: translateY(-2px) scale(1.01);
+      }
+
+      .slot-name {
+        font-size: clamp(14px, 4dvh, 23px);
+      }
+
+      .guide {
+        width: min(58dvh, 40vw);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="portrait-warning" aria-live="polite">
+    <div class="portrait-card">
+      <h1>端末を横向きにしてください</h1>
+      <p>「虹を駆ける」は横長画面で遊ぶカメラアプリです。スマホやタブレットを横向きにして、虹の7色を集めてください。</p>
+    </div>
+  </div>
+
+  <main class="app" aria-label="虹を駆ける">
+    <header>
+      <div class="title">虹を駆ける</div>
+      <div class="subtitle">虹の7色を見つけて撮り集める</div>
+    </header>
+
+    <section class="main">
+      <div class="camera-panel" id="cameraPanel">
+        <video id="video" autoplay playsinline muted></video>
+        <div class="guide" aria-hidden="true"></div>
+        <div class="camera-placeholder" id="cameraPlaceholder">
+          <button class="start-button" id="startButton" type="button">カメラを起動</button>
+          <p id="cameraMessage">背面カメラを優先して起動します。許可を求められたら、カメラの使用を許可してください。</p>
+        </div>
+      </div>
+
+      <aside class="control-panel">
+        <div>
+          <div class="selected-label">選択中</div>
+          <div class="selected-color" id="selectedColor">赤</div>
+        </div>
+        <p class="hint" id="hint">身の回りの赤を見つけて撮影</p>
+        <button class="capture-button" id="captureButton" type="button" disabled>Catch the rainbow!</button>
+        <div>
+          <div class="progress" id="progress">0 / 7</div>
+          <div class="complete-message" id="completeMessage"></div>
+        </div>
+        <div class="action-row">
+          <button class="small-button save" id="saveButton" type="button" disabled>虹画像を保存</button>
+          <button class="small-button" id="resetButton" type="button">もう一度集める</button>
+        </div>
+      </aside>
+    </section>
+
+    <nav class="roll" id="roll" aria-label="7色カメラロール"></nav>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <canvas id="captureCanvas" width="600" height="600"></canvas>
+  <canvas id="saveCanvas" width="4200" height="600"></canvas>
+
+  <script>
+    const colorData = [
+      { name: '赤', hint: '身の回りの赤を見つけて撮影', image: null },
+      { name: '橙', hint: '身の回りの橙を見つけて撮影', image: null },
+      { name: '黄', hint: '身の回りの黄を見つけて撮影', image: null },
+      { name: '緑', hint: '身の回りの緑を見つけて撮影', image: null },
+      { name: '青', hint: '身の回りの青を見つけて撮影', image: null },
+      { name: '藍', hint: '身の回りの藍を見つけて撮影', image: null },
+      { name: '紫', hint: '身の回りの紫を見つけて撮影', image: null }
+    ];
+
+    let selectedIndex = 0;
+    let stream = null;
+    let completedOnce = false;
+    let toastTimer = null;
+
+    const video = document.getElementById('video');
+    const cameraPanel = document.getElementById('cameraPanel');
+    const cameraPlaceholder = document.getElementById('cameraPlaceholder');
+    const cameraMessage = document.getElementById('cameraMessage');
+    const startButton = document.getElementById('startButton');
+    const captureButton = document.getElementById('captureButton');
+    const selectedColor = document.getElementById('selectedColor');
+    const hint = document.getElementById('hint');
+    const progress = document.getElementById('progress');
+    const completeMessage = document.getElementById('completeMessage');
+    const saveButton = document.getElementById('saveButton');
+    const resetButton = document.getElementById('resetButton');
+    const roll = document.getElementById('roll');
+    const toast = document.getElementById('toast');
+    const captureCanvas = document.getElementById('captureCanvas');
+    const saveCanvas = document.getElementById('saveCanvas');
+
+    function renderRoll() {
+      roll.innerHTML = '';
+      colorData.forEach((item, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'slot' + (index === selectedIndex ? ' active' : '');
+        button.setAttribute('aria-label', item.image ? item.name + 'を撮り直す' : item.name + 'を選択');
+
+        if (item.image) {
+          const img = document.createElement('img');
+          img.src = item.image;
+          img.alt = '';
+          button.appendChild(img);
+        } else {
+          const span = document.createElement('span');
+          span.className = 'slot-name';
+          span.textContent = item.name;
+          button.appendChild(span);
+        }
+
+        button.addEventListener('click', () => selectColor(index));
+        roll.appendChild(button);
+      });
+    }
+
+    function selectColor(index) {
+      selectedIndex = index;
+      selectedColor.textContent = colorData[selectedIndex].name;
+      hint.textContent = colorData[selectedIndex].hint;
+      renderRoll();
+    }
+
+    async function startCamera() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        cameraMessage.textContent = 'このブラウザではカメラを使用できません。別のブラウザで開いてください。';
+        return;
+      }
+
+      startButton.disabled = true;
+      cameraMessage.textContent = 'カメラを起動しています。';
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
+          audio: false
+        });
+        video.srcObject = stream;
+        await video.play();
+        cameraPlaceholder.classList.add('hidden');
+        cameraPanel.classList.add('camera-ready');
+        captureButton.disabled = false;
+        showToast('カメラを起動しました');
+      } catch (error) {
+        console.error(error);
+        startButton.disabled = false;
+        cameraMessage.textContent = 'カメラを起動できませんでした。ブラウザの設定でカメラを許可してください。';
+      }
+    }
+
+    function capturePhoto() {
+      if (!stream || !video.videoWidth || !video.videoHeight) {
+        showToast('カメラがまだ準備できていません');
+        return;
+      }
+
+      const canvas = captureCanvas;
+      const ctx = canvas.getContext('2d');
+      const sourceSize = Math.min(video.videoWidth, video.videoHeight);
+      const sx = Math.floor((video.videoWidth - sourceSize) / 2);
+      const sy = Math.floor((video.videoHeight - sourceSize) / 2);
+
+      ctx.clearRect(0, 0, 600, 600);
+      ctx.drawImage(video, sx, sy, sourceSize, sourceSize, 0, 0, 600, 600);
+
+      const wasFilled = Boolean(colorData[selectedIndex].image);
+      colorData[selectedIndex].image = canvas.toDataURL('image/png');
+      showToast(colorData[selectedIndex].name + (wasFilled ? 'を撮り直しました' : 'を撮りました'));
+
+      const becameComplete = isComplete();
+      updateState();
+
+      if (becameComplete) {
+        completedOnce = true;
+        roll.classList.remove('complete');
+        void roll.offsetWidth;
+        roll.classList.add('complete');
+        showToast('虹が完成しました');
+      } else {
+        moveToNextEmpty();
+      }
+    }
+
+    function moveToNextEmpty() {
+      for (let step = 1; step <= colorData.length; step++) {
+        const next = (selectedIndex + step) % colorData.length;
+        if (!colorData[next].image) {
+          selectColor(next);
+          return;
+        }
+      }
+      selectColor(selectedIndex);
+    }
+
+    function filledCount() {
+      return colorData.filter(item => item.image).length;
+    }
+
+    function isComplete() {
+      return filledCount() === colorData.length;
+    }
+
+    function updateState() {
+      const count = filledCount();
+      progress.textContent = count + ' / 7';
+      saveButton.disabled = !isComplete();
+      completeMessage.textContent = isComplete() ? '虹が完成しました' : '';
+      renderRoll();
+    }
+
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+    }
+
+    async function saveRainbowImage() {
+      if (!isComplete()) {
+        showToast('7色すべて集めると保存できます');
+        return;
+      }
+
+      const ctx = saveCanvas.getContext('2d');
+      ctx.clearRect(0, 0, 4200, 600);
+
+      for (let i = 0; i < colorData.length; i++) {
+        const img = await loadImage(colorData[i].image);
+        ctx.drawImage(img, i * 600, 0, 600, 600);
+      }
+
+      saveCanvas.toBlob(blob => {
+        if (!blob) {
+          showToast('画像を作成できませんでした');
+          return;
+        }
+
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'niji-wo-kakeru.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('虹画像を保存しました');
+      }, 'image/png');
+    }
+
+    function resetAll() {
+      colorData.forEach(item => { item.image = null; });
+      completedOnce = false;
+      completeMessage.textContent = '';
+      roll.classList.remove('complete');
+      selectColor(0);
+      updateState();
+      showToast('最初から集めます');
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 1200);
+    }
+
+    startButton.addEventListener('click', startCamera);
+    captureButton.addEventListener('click', capturePhoto);
+    saveButton.addEventListener('click', saveRainbowImage);
+    resetButton.addEventListener('click', resetAll);
+
+    renderRoll();
+    updateState();
+    selectColor(0);
+
+    window.addEventListener('pagehide', () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    });
+  </script>
+</body>
+</html>
