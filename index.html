@@ -165,6 +165,8 @@
     }
 
     .start-button {
+      position: relative;
+      min-width: 190px;
       padding: 18px 40px;
       border-radius: 18px;
       background: linear-gradient(180deg, #ffffff 0%, #e9eeff 72%, #c4cff7 100%);
@@ -176,15 +178,48 @@
         0 12px 0 #8b98bd,
         0 26px 48px rgba(0,0,0,0.42),
         inset 0 2px 0 rgba(255,255,255,0.95);
-      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.14s ease;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, filter 0.14s ease, background 0.18s ease;
+      overflow: hidden;
     }
 
-    .start-button:active:not(:disabled) {
+    .start-button::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+      transform: translateX(-120%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .start-button:active:not(:disabled),
+    .start-button.is-pressing,
+    .start-button.is-loading {
       transform: translateY(7px);
       box-shadow:
         0 5px 0 #8b98bd,
         0 16px 34px rgba(0,0,0,0.38),
         inset 0 2px 0 rgba(255,255,255,0.95);
+    }
+
+    .start-button.is-loading {
+      cursor: progress;
+      color: #061024;
+      background: linear-gradient(180deg, #f8fbff 0%, #dbe5ff 62%, #b9c6ef 100%);
+    }
+
+    .start-button.is-loading::before {
+      opacity: 1;
+      animation: startSweep 1.05s ease-in-out infinite;
+    }
+
+    .start-button:disabled {
+      opacity: 1;
+    }
+
+    @keyframes startSweep {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(120%); }
     }
 
     .camera-message {
@@ -197,6 +232,17 @@
       text-align: center;
       font-size: clamp(11px, 1vw, 13px);
       line-height: 1.45;
+      transition: color 0.18s ease, opacity 0.18s ease;
+    }
+
+    .camera-message.is-waiting {
+      color: rgba(255,255,255,0.92);
+      animation: messagePulse 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes messagePulse {
+      from { opacity: 0.68; }
+      to { opacity: 1; }
     }
 
     .guide {
@@ -943,6 +989,9 @@
       }
 
       startButton.disabled = true;
+      startButton.classList.add('is-loading');
+      startButton.textContent = '起動中…';
+      cameraMessage.classList.add('is-waiting');
       cameraMessage.textContent = 'カメラの使用を許可してください。';
 
       try {
@@ -956,12 +1005,17 @@
         });
         video.srcObject = stream;
         await video.play();
+        startButton.classList.remove('is-loading');
+        cameraMessage.classList.remove('is-waiting');
         cameraPlaceholder.classList.add('hidden');
         cameraPanel.classList.add('camera-ready');
         captureButton.disabled = false;
       } catch (error) {
         console.error(error);
         startButton.disabled = false;
+        startButton.classList.remove('is-loading');
+        startButton.textContent = 'カメラを起動';
+        cameraMessage.classList.remove('is-waiting');
         cameraMessage.textContent = 'カメラの使用を許可してください。';
       }
     }
@@ -1145,7 +1199,23 @@
       }, 900);
     }
 
-    startButton.addEventListener('click', startCamera);
+    startButton.addEventListener('pointerdown', () => {
+      if (startButton.disabled) return;
+      startButton.classList.add('is-pressing');
+    });
+
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach((eventName) => {
+      startButton.addEventListener(eventName, () => {
+        if (startButton.classList.contains('is-loading')) return;
+        startButton.classList.remove('is-pressing');
+      });
+    });
+
+    startButton.addEventListener('click', () => {
+      startButton.classList.add('is-pressing');
+      setTimeout(() => startButton.classList.remove('is-pressing'), 120);
+      startCamera();
+    });
     captureButton.addEventListener('click', capturePhoto);
     saveButton.addEventListener('click', saveRainbowImage);
 
