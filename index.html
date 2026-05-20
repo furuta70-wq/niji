@@ -77,7 +77,7 @@
       width: 100vw;
       height: 100dvh;
       display: grid;
-      grid-template-rows: minmax(34px, 6dvh) 1fr minmax(78px, 17dvh);
+      grid-template-rows: minmax(28px, 5dvh) 1fr minmax(78px, 17dvh);
       background:
         radial-gradient(circle at 13% 14%, rgba(255, 75, 75, 0.09), transparent 26%),
         radial-gradient(circle at 48% 8%, rgba(255, 210, 70, 0.08), transparent 24%),
@@ -107,7 +107,7 @@
     }
 
     .title {
-      font-size: clamp(18px, 2vw, 28px);
+      font-size: clamp(17px, 1.75vw, 24px);
       font-weight: 950;
       letter-spacing: 0.13em;
       white-space: nowrap;
@@ -365,6 +365,44 @@
       pointer-events: none;
     }
 
+
+    .complete-label {
+      display: none;
+      align-self: end;
+      justify-self: center;
+      font-size: clamp(22px, 2.7vw, 42px);
+      font-weight: 950;
+      letter-spacing: 0.08em;
+      text-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    }
+
+    .control-panel.completed {
+      grid-template-rows: 1fr auto 1fr;
+    }
+
+    .control-panel.completed .selected-color,
+    .control-panel.completed .capture-button {
+      display: none;
+    }
+
+    .control-panel.completed .complete-label {
+      display: block;
+    }
+
+    .control-panel.completed .small-button {
+      visibility: visible;
+      pointer-events: auto;
+      align-self: start;
+      padding: clamp(16px, 2.1vw, 26px) 10px;
+      border-radius: 22px;
+      font-size: clamp(18px, 2vw, 30px);
+      box-shadow:
+        0 11px 0 #17613e,
+        0 24px 44px rgba(0,0,0,0.36),
+        0 0 34px rgba(80,255,170,0.20),
+        inset 0 2px 0 rgba(255,255,255,0.30);
+    }
+
     .roll {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
@@ -383,13 +421,17 @@
       border-radius: 18px;
       border: 2px solid var(--slot-border);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
-        var(--slot);
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,0.16), transparent 48%),
+        linear-gradient(180deg, rgba(255,255,255,0.13), rgba(255,255,255,0.025) 46%, rgba(0,0,0,0.10)),
+        linear-gradient(135deg, rgba(76,86,110,0.98), rgba(61,70,91,0.98));
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 10px 24px rgba(0,0,0,0.27);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.18),
+        inset 0 -10px 18px rgba(0,0,0,0.12),
+        0 10px 24px rgba(0,0,0,0.27);
       transform: translateY(0) scale(1);
       transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
     }
@@ -455,6 +497,32 @@
       filter: brightness(1.08) contrast(1.05);
     }
 
+
+    .slot.caught {
+      animation: caughtSlot 0.82s ease both;
+    }
+
+    .slot.caught::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.62), rgba(255,255,255,0.12) 42%, transparent 72%);
+      animation: caughtShine 0.82s ease both;
+      z-index: 4;
+    }
+
+    @keyframes caughtSlot {
+      0% { filter: brightness(1.35) saturate(1.12); box-shadow: 0 0 0 2px rgba(255,255,255,0.95), 0 0 36px rgba(255,255,255,0.40), 0 10px 24px rgba(0,0,0,0.27); }
+      100% { filter: brightness(1.06) contrast(1.04); }
+    }
+
+    @keyframes caughtShine {
+      0% { opacity: 0.95; transform: scale(0.88); }
+      100% { opacity: 0; transform: scale(1.18); }
+    }
+
     @keyframes rainbowBorder {
       0% { filter: hue-rotate(0deg); }
       100% { filter: hue-rotate(360deg); }
@@ -489,7 +557,15 @@
       pointer-events: none;
       border-radius: 18px;
       box-shadow: 0 26px 70px rgba(0,0,0,0.48), 0 0 0 2px rgba(255,255,255,0.75);
-      transition: left 0.54s cubic-bezier(.2,.85,.2,1), top 0.54s cubic-bezier(.2,.85,.2,1), width 0.54s cubic-bezier(.2,.85,.2,1), height 0.54s cubic-bezier(.2,.85,.2,1), border-radius 0.54s cubic-bezier(.2,.85,.2,1), opacity 0.54s ease;
+      transform: scale(1);
+      transition:
+        left 0.58s cubic-bezier(.16,.92,.18,1),
+        top 0.58s cubic-bezier(.16,.92,.18,1),
+        width 0.58s cubic-bezier(.16,.92,.18,1),
+        height 0.58s cubic-bezier(.16,.92,.18,1),
+        border-radius 0.58s cubic-bezier(.16,.92,.18,1),
+        opacity 0.58s ease,
+        transform 0.58s cubic-bezier(.16,.92,.18,1);
     }
 
     .camera-panel.flash::after {
@@ -542,7 +618,7 @@
 
     @media (orientation: landscape) and (min-width: 900px) and (min-height: 560px) {
       .app {
-        grid-template-rows: minmax(42px, 6dvh) 1fr minmax(92px, 16.5dvh);
+        grid-template-rows: minmax(34px, 5dvh) 1fr minmax(92px, 16.5dvh);
       }
 
       header {
@@ -598,7 +674,7 @@
     @media (orientation: landscape) and (max-width: 899px),
            (orientation: landscape) and (max-height: 559px) {
       .app {
-        grid-template-rows: minmax(24px, 7dvh) 1fr minmax(62px, 23dvh);
+        grid-template-rows: minmax(20px, 5.8dvh) 1fr minmax(62px, 23dvh);
       }
 
       header {
@@ -676,6 +752,16 @@
         padding: 7px 4px;
         border-radius: 11px;
         font-size: 11px;
+      }
+
+      .complete-label {
+        font-size: clamp(16px, 6dvh, 26px);
+      }
+
+      .control-panel.completed .small-button {
+        padding: 10px 5px;
+        border-radius: 13px;
+        font-size: clamp(13px, 4.5dvh, 20px);
       }
 
       .roll {
@@ -768,12 +854,13 @@
         <div class="guide" aria-hidden="true"></div>
         <div class="camera-placeholder" id="cameraPlaceholder">
           <button class="start-button" id="startButton" type="button">カメラを起動</button>
-          <p class="camera-message" id="cameraMessage">虹の色を撮るため、カメラの使用を許可してください</p>
+          <p class="camera-message" id="cameraMessage">カメラの使用を許可してください。</p>
         </div>
       </div>
 
       <aside class="control-panel">
         <div class="selected-color" id="selectedColor">赤</div>
+        <div class="complete-label" id="completeLabel">完成</div>
         <button class="capture-button" id="captureButton" type="button" disabled>Catch the rainbow!</button>
         <button class="small-button hidden" id="saveButton" type="button">保存</button>
       </aside>
@@ -810,6 +897,7 @@
     const captureButton = document.getElementById('captureButton');
     const selectedColor = document.getElementById('selectedColor');
     const saveButton = document.getElementById('saveButton');
+    const controlPanel = document.querySelector('.control-panel');
     const roll = document.getElementById('roll');
     const guide = document.querySelector('.guide');
     const toast = document.getElementById('toast');
@@ -855,7 +943,7 @@
       }
 
       startButton.disabled = true;
-      cameraMessage.textContent = 'カメラの許可を待っています';
+      cameraMessage.textContent = 'カメラの使用を許可してください。';
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -874,7 +962,7 @@
       } catch (error) {
         console.error(error);
         startButton.disabled = false;
-        cameraMessage.textContent = 'カメラを許可すると撮影できます';
+        cameraMessage.textContent = 'カメラの使用を許可してください。';
       }
     }
 
@@ -915,12 +1003,14 @@
       updateState();
 
       if (complete) {
+        markCaught(capturedIndex);
         roll.classList.remove('complete');
         void roll.offsetWidth;
         roll.classList.add('complete');
         showToast('完成');
       } else {
         moveToNextEmptyFrom(capturedIndex);
+        markCaught(capturedIndex);
       }
 
       isCapturing = false;
@@ -952,7 +1042,8 @@
           img.style.width = endRect.width + 'px';
           img.style.height = endRect.height + 'px';
           img.style.borderRadius = getComputedStyle(target).borderRadius;
-          img.style.opacity = '0.96';
+          img.style.opacity = '0.98';
+          img.style.transform = 'scale(0.98)';
         });
 
         const finish = () => {
@@ -963,6 +1054,18 @@
         img.addEventListener('transitionend', finish);
         setTimeout(finish, 680);
       });
+    }
+
+    function markCaught(index) {
+      const target = roll.children[index];
+      if (!target) return;
+      target.classList.remove('caught');
+      void target.offsetWidth;
+      target.classList.add('caught');
+      setTimeout(() => {
+        const current = roll.children[index];
+        if (current) current.classList.remove('caught');
+      }, 900);
     }
 
     function moveToNextEmpty() {
@@ -989,8 +1092,9 @@
     }
 
     function updateState() {
-      const count = filledCount();
-      saveButton.classList.toggle('hidden', !isComplete());
+      const complete = isComplete();
+      saveButton.classList.toggle('hidden', !complete);
+      controlPanel.classList.toggle('completed', complete);
       renderRoll();
     }
 
