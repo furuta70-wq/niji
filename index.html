@@ -934,6 +934,8 @@
     let stream = null;
     let toastTimer = null;
     let isCapturing = false;
+    let cameraWasStarted = false;
+    let isStartingCamera = false;
 
     const video = document.getElementById('video');
     const cameraPanel = document.getElementById('cameraPanel');
@@ -982,17 +984,54 @@
       renderRoll();
     }
 
-    async function startCamera() {
+    function hasLiveCameraStream() {
+      return stream && stream.getVideoTracks().some(track => track.readyState === 'live');
+    }
+
+    function setCameraReady() {
+      startButton.classList.remove('is-loading', 'is-pressing');
+      cameraMessage.classList.remove('is-waiting');
+      cameraPlaceholder.classList.add('hidden');
+      cameraPanel.classList.add('camera-ready');
+      captureButton.disabled = false;
+    }
+
+    function stopCameraStream() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      stream = null;
+      video.pause();
+      video.srcObject = null;
+      captureButton.disabled = true;
+      cameraPanel.classList.remove('camera-ready');
+    }
+
+    async function startCamera(options = {}) {
+      if (isStartingCamera) return;
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         cameraMessage.textContent = '非対応ブラウザです';
         return;
       }
 
+      cameraWasStarted = true;
+
+      if (hasLiveCameraStream()) {
+        try {
+          await video.play();
+          setCameraReady();
+          return;
+        } catch (error) {
+          stopCameraStream();
+        }
+      }
+
+      isStartingCamera = true;
       startButton.disabled = true;
       startButton.classList.add('is-loading');
-      startButton.textContent = '起動中…';
+      startButton.textContent = options.reconnect ? '再接続中…' : '起動中…';
       cameraMessage.classList.add('is-waiting');
-      cameraMessage.textContent = 'カメラの使用を許可してください。';
+      cameraMessage.textContent = options.reconnect ? 'カメラを再接続中…' : 'カメラの使用を許可してください。';
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -1003,20 +1042,36 @@
           },
           audio: false
         });
+
+        stream.getVideoTracks().forEach(track => {
+          track.addEventListener('ended', () => {
+            captureButton.disabled = true;
+            cameraPanel.classList.remove('camera-ready');
+            if (cameraWasStarted && !document.hidden) {
+              cameraPlaceholder.classList.remove('hidden');
+              startButton.disabled = false;
+              startButton.classList.remove('is-loading', 'is-pressing');
+              startButton.textContent = 'カメラを再起動';
+              cameraMessage.classList.remove('is-waiting');
+              cameraMessage.textContent = 'カメラが停止しました。';
+            }
+          });
+        });
+
         video.srcObject = stream;
         await video.play();
-        startButton.classList.remove('is-loading');
-        cameraMessage.classList.remove('is-waiting');
-        cameraPlaceholder.classList.add('hidden');
-        cameraPanel.classList.add('camera-ready');
-        captureButton.disabled = false;
+        setCameraReady();
       } catch (error) {
         console.error(error);
+        stopCameraStream();
+        cameraPlaceholder.classList.remove('hidden');
         startButton.disabled = false;
-        startButton.classList.remove('is-loading');
-        startButton.textContent = 'カメラを起動';
+        startButton.classList.remove('is-loading', 'is-pressing');
+        startButton.textContent = options.reconnect ? 'カメラを再起動' : 'カメラを起動';
         cameraMessage.classList.remove('is-waiting');
         cameraMessage.textContent = 'カメラの使用を許可してください。';
+      } finally {
+        isStartingCamera = false;
       }
     }
 
@@ -1224,8 +1279,20 @@
     selectColor(0);
 
     window.addEventListener('pagehide', () => {
-      if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+      if (cameraWasStarted) {
+        stopCameraStream();
+      }
+    });
+
+    window.addEventListener('pageshow', () => {
+      if (cameraWasStarted) {
+        startCamera({ reconnect: true });
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && cameraWasStarted && !hasLiveCameraStream()) {
+        startCamera({ reconnect: true });
       }
     });
   </script>
