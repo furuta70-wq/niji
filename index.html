@@ -6,17 +6,15 @@
   <title>虹を駆ける</title>
   <style>
     :root {
-      --bg: #071126;
-      --panel: #101b32;
-      --panel2: #16223b;
-      --text: #f6f8ff;
-      --muted: #aab3c7;
-      --slot: #4b5268;
-      --slot-border: #66708a;
+      --bg: #050b1c;
+      --panel: rgba(13, 24, 48, 0.74);
+      --line: rgba(255,255,255,0.13);
+      --text: #f7f9ff;
+      --muted: #aeb8ce;
+      --slot: #535c72;
+      --slot-border: #737d98;
       --active: #ffffff;
-      --danger: #ff6b6b;
-      --ok: #9fe6b8;
-      --shadow: rgba(0, 0, 0, 0.35);
+      --ok: #a9ffd1;
     }
 
     * {
@@ -47,59 +45,50 @@
       display: none;
       width: 100vw;
       height: 100dvh;
-      padding: 28px;
       align-items: center;
       justify-content: center;
       text-align: center;
+      padding: 26px;
       background:
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08), transparent 28%),
-        radial-gradient(circle at 80% 80%, rgba(120,160,255,0.12), transparent 34%),
+        radial-gradient(circle at 20% 18%, rgba(255,255,255,0.08), transparent 28%),
+        radial-gradient(circle at 78% 84%, rgba(95,135,255,0.13), transparent 34%),
         var(--bg);
     }
 
     .portrait-card {
-      max-width: 420px;
-      padding: 28px 24px;
-      border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 24px;
-      background: rgba(16, 27, 50, 0.82);
-      box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+      width: min(440px, 92vw);
+      padding: 28px 22px;
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background: rgba(12, 22, 44, 0.78);
+      box-shadow: 0 24px 70px rgba(0,0,0,0.38);
     }
 
     .portrait-card h1 {
-      margin: 0 0 14px;
-      font-size: 26px;
-      letter-spacing: 0.06em;
-    }
-
-    .portrait-card p {
       margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: 15px;
+      font-size: 23px;
+      letter-spacing: 0.08em;
     }
 
     .app {
       width: 100vw;
       height: 100dvh;
       display: grid;
-      grid-template-rows: minmax(38px, 8dvh) 1fr minmax(84px, 22dvh);
+      grid-template-rows: minmax(34px, 7dvh) 1fr minmax(72px, 19dvh);
       background:
-        linear-gradient(120deg, rgba(255, 55, 55, 0.08), transparent 16%),
-        linear-gradient(150deg, rgba(255, 180, 35, 0.07), transparent 26%),
-        linear-gradient(210deg, rgba(80, 190, 255, 0.08), transparent 34%),
-        var(--bg);
+        radial-gradient(circle at 13% 14%, rgba(255, 75, 75, 0.09), transparent 26%),
+        radial-gradient(circle at 48% 8%, rgba(255, 210, 70, 0.08), transparent 24%),
+        radial-gradient(circle at 86% 18%, rgba(88, 126, 255, 0.10), transparent 28%),
+        linear-gradient(180deg, #08132a 0%, #050b1c 100%);
     }
 
     header {
+      position: relative;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
-      min-height: 38px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(5, 13, 30, 0.72);
-      position: relative;
+      background: rgba(3, 10, 24, 0.68);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
     }
 
     header::after {
@@ -110,26 +99,20 @@
       bottom: -1px;
       height: 2px;
       background: linear-gradient(90deg, #ef3b3b, #f28c28, #f5e84a, #4cc56d, #2d8cff, #3547d4, #8d4bd8);
-      opacity: 0.85;
+      opacity: 0.95;
     }
 
     .title {
-      font-size: clamp(18px, 2.2vw, 30px);
-      font-weight: 800;
-      letter-spacing: 0.14em;
-      white-space: nowrap;
-    }
-
-    .subtitle {
-      color: var(--muted);
-      font-size: clamp(11px, 1.2vw, 14px);
+      font-size: clamp(18px, 2vw, 28px);
+      font-weight: 900;
+      letter-spacing: 0.13em;
       white-space: nowrap;
     }
 
     .main {
       min-height: 0;
       display: grid;
-      grid-template-columns: 74fr 26fr;
+      grid-template-columns: 75fr 25fr;
       gap: 10px;
       padding: 10px max(12px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left));
     }
@@ -137,11 +120,12 @@
     .camera-panel,
     .control-panel {
       min-height: 0;
-      border-radius: 18px;
-      background: rgba(16, 27, 50, 0.78);
-      border: 1px solid rgba(255,255,255,0.10);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.23);
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: 0 22px 48px rgba(0,0,0,0.27);
       overflow: hidden;
+      backdrop-filter: blur(12px);
     }
 
     .camera-panel {
@@ -162,158 +146,145 @@
     .camera-placeholder {
       position: absolute;
       inset: 0;
+      z-index: 3;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 14px;
       padding: 24px;
-      text-align: center;
       background:
-        radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 45%),
-        #081226;
-      z-index: 3;
+        radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 46%),
+        #071126;
     }
 
     .camera-placeholder.hidden {
       display: none;
     }
 
-    .camera-placeholder p {
-      max-width: 520px;
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: clamp(13px, 1.3vw, 16px);
-    }
-
     .start-button {
-      padding: 14px 28px;
+      padding: 15px 32px;
       border-radius: 999px;
-      background: #f6f8ff;
+      background: #f7f9ff;
       color: #071126;
       font-size: clamp(16px, 1.7vw, 22px);
-      font-weight: 800;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.32);
+      font-weight: 900;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.36);
+    }
+
+    .camera-message {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+      margin: 0;
+      color: rgba(255,255,255,0.72);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.5;
     }
 
     .guide {
       position: absolute;
-      width: min(56dvh, 46vw);
+      width: min(56dvh, 44vw);
       aspect-ratio: 1 / 1;
-      border: 1.5px solid rgba(255,255,255,0.55);
       z-index: 2;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.2s ease;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.65));
     }
 
     .camera-ready .guide {
       opacity: 1;
     }
 
-    .guide::before,
+    .guide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1.5px solid rgba(255,255,255,0.54);
+    }
+
     .guide::after {
       content: "";
       position: absolute;
       inset: -1.5px;
       background:
-        linear-gradient(#fff, #fff) left top / 28px 3px no-repeat,
-        linear-gradient(#fff, #fff) left top / 3px 28px no-repeat,
-        linear-gradient(#fff, #fff) right top / 28px 3px no-repeat,
-        linear-gradient(#fff, #fff) right top / 3px 28px no-repeat,
-        linear-gradient(#fff, #fff) left bottom / 28px 3px no-repeat,
-        linear-gradient(#fff, #fff) left bottom / 3px 28px no-repeat,
-        linear-gradient(#fff, #fff) right bottom / 28px 3px no-repeat,
-        linear-gradient(#fff, #fff) right bottom / 3px 28px no-repeat;
-      opacity: 0.8;
+        linear-gradient(#fff, #fff) left top / 31px 4px no-repeat,
+        linear-gradient(#fff, #fff) left top / 4px 31px no-repeat,
+        linear-gradient(#fff, #fff) right top / 31px 4px no-repeat,
+        linear-gradient(#fff, #fff) right top / 4px 31px no-repeat,
+        linear-gradient(#fff, #fff) left bottom / 31px 4px no-repeat,
+        linear-gradient(#fff, #fff) left bottom / 4px 31px no-repeat,
+        linear-gradient(#fff, #fff) right bottom / 31px 4px no-repeat,
+        linear-gradient(#fff, #fff) right bottom / 4px 31px no-repeat;
+      opacity: 0.86;
     }
 
     .control-panel {
       padding: clamp(10px, 1.6vw, 22px);
       display: grid;
-      grid-template-rows: auto 1fr auto auto auto;
-      gap: clamp(7px, 1.2vw, 14px);
+      grid-template-rows: auto 1fr auto auto;
+      gap: clamp(8px, 1.3vw, 16px);
       align-items: center;
       text-align: center;
     }
 
-    .selected-label {
-      color: var(--muted);
-      font-size: clamp(11px, 1.2vw, 15px);
-      letter-spacing: 0.12em;
-    }
-
     .selected-color {
-      font-size: clamp(26px, 5vw, 64px);
-      font-weight: 900;
+      font-size: clamp(30px, 5vw, 58px);
+      font-weight: 950;
       line-height: 1;
-      text-shadow: 0 8px 24px rgba(0,0,0,0.35);
-    }
-
-    .hint {
-      color: var(--muted);
-      font-size: clamp(11px, 1.15vw, 15px);
-      line-height: 1.55;
-      margin: 0;
+      text-shadow: 0 10px 28px rgba(0,0,0,0.38);
     }
 
     .capture-button {
       width: 100%;
-      min-height: clamp(64px, 18dvh, 170px);
+      height: 100%;
+      min-height: clamp(76px, 22dvh, 190px);
       padding: 12px 10px;
-      border-radius: 22px;
-      background: linear-gradient(145deg, #ffffff, #dce5ff);
+      border-radius: 25px;
+      background:
+        linear-gradient(#f8fbff, #e1e8ff) padding-box,
+        linear-gradient(135deg, rgba(255,255,255,1), rgba(120,160,255,0.55)) border-box;
+      border: 1px solid transparent;
       color: #071126;
-      font-size: clamp(18px, 2.8vw, 40px);
+      font-size: clamp(20px, 2.85vw, 40px);
       font-weight: 950;
       line-height: 1.08;
-      box-shadow: 0 18px 34px rgba(0,0,0,0.32), inset 0 0 0 1px rgba(255,255,255,0.7);
+      box-shadow: 0 20px 42px rgba(0,0,0,0.36), inset 0 0 0 1px rgba(255,255,255,0.74);
+      transition: transform 0.08s ease, box-shadow 0.14s ease, opacity 0.14s ease;
+    }
+
+    .capture-button:active:not(:disabled) {
+      transform: scale(0.965);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.32), inset 0 0 0 1px rgba(255,255,255,0.74);
     }
 
     .capture-button:disabled {
-      opacity: 0.45;
+      opacity: 0.42;
       cursor: not-allowed;
     }
 
     .progress {
-      font-size: clamp(18px, 2.4vw, 36px);
-      font-weight: 800;
-    }
-
-    .complete-message {
-      min-height: 1.4em;
-      color: var(--ok);
-      font-size: clamp(12px, 1.2vw, 16px);
-      font-weight: 700;
-    }
-
-    .action-row {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-      width: 100%;
+      font-size: clamp(18px, 2.2vw, 34px);
+      font-weight: 900;
+      letter-spacing: 0.04em;
     }
 
     .small-button {
       width: 100%;
-      padding: clamp(8px, 1.2vw, 13px) 8px;
-      border-radius: 14px;
-      background: var(--panel2);
-      border: 1px solid rgba(255,255,255,0.12);
+      padding: clamp(9px, 1.25vw, 14px) 8px;
+      border-radius: 16px;
+      background: linear-gradient(145deg, #266348, #183d2b);
+      border: 1px solid rgba(169,255,209,0.38);
       color: var(--text);
-      font-size: clamp(12px, 1.15vw, 16px);
-      font-weight: 800;
+      font-size: clamp(13px, 1.2vw, 17px);
+      font-weight: 900;
+      box-shadow: 0 12px 25px rgba(0,0,0,0.24);
     }
 
-    .small-button.save {
-      background: linear-gradient(145deg, #265a42, #173927);
-      border-color: rgba(159,230,184,0.35);
-    }
-
-    .small-button:disabled {
-      opacity: 0.36;
-      cursor: not-allowed;
+    .small-button.hidden {
+      visibility: hidden;
+      pointer-events: none;
     }
 
     .roll {
@@ -321,7 +292,7 @@
       grid-template-columns: repeat(7, 1fr);
       gap: 8px;
       padding: 8px max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-      background: rgba(5, 13, 30, 0.78);
+      background: rgba(3, 10, 24, 0.80);
       border-top: 1px solid rgba(255,255,255,0.08);
     }
 
@@ -330,36 +301,42 @@
       min-width: 0;
       min-height: 0;
       height: 100%;
-      border-radius: 16px;
-      border: 2px solid var(--slot-border);
+      border-radius: 17px;
+      border: 1px solid var(--slot-border);
       background: var(--slot);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06), 0 8px 18px rgba(0,0,0,0.2);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 9px 20px rgba(0,0,0,0.22);
       transform: translateY(0) scale(1);
-      transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+      transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
+    }
+
+    .slot.filled {
+      border-color: rgba(255,255,255,0.18);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: brightness(1.06) contrast(1.04);
     }
 
     .slot.active {
       border-color: var(--active);
-      box-shadow: 0 0 18px rgba(255,255,255,0.35), 0 12px 22px rgba(0,0,0,0.28);
-      transform: translateY(-4px) scale(1.015);
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.85), 0 0 24px rgba(255,255,255,0.34), 0 14px 26px rgba(0,0,0,0.32);
+      transform: translateY(-5px) scale(1.015);
       z-index: 2;
+      filter: none;
     }
 
-    .slot img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
+    .slot.filled.active {
+      filter: brightness(1.08) contrast(1.05);
     }
 
     .slot-name {
-      font-size: clamp(16px, 2.2vw, 34px);
-      font-weight: 900;
-      color: #f4f7ff;
+      font-size: clamp(16px, 2vw, 31px);
+      font-weight: 950;
+      color: #f5f7ff;
       letter-spacing: 0.08em;
     }
 
@@ -369,20 +346,21 @@
 
     @keyframes rollGlow {
       0% { box-shadow: inset 0 0 0 rgba(255,255,255,0); }
-      45% { box-shadow: inset 0 0 70px rgba(255,255,255,0.22); }
+      45% { box-shadow: inset 0 0 76px rgba(255,255,255,0.23); }
       100% { box-shadow: inset 0 0 0 rgba(255,255,255,0); }
     }
 
     .toast {
       position: fixed;
       left: 50%;
-      bottom: calc(22dvh + 16px);
-      transform: translateX(-50%) translateY(18px);
-      padding: 10px 16px;
+      bottom: calc(19dvh + 15px);
+      transform: translateX(-50%) translateY(16px);
+      padding: 9px 15px;
       border-radius: 999px;
-      background: rgba(0,0,0,0.72);
+      background: rgba(0,0,0,0.70);
       color: #fff;
-      font-size: 14px;
+      font-size: 13px;
+      font-weight: 800;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.2s ease, transform 0.2s ease;
@@ -406,7 +384,7 @@
 
     @media (orientation: landscape) and (max-height: 500px) {
       .app {
-        grid-template-rows: minmax(28px, 7dvh) 1fr minmax(68px, 24dvh);
+        grid-template-rows: minmax(26px, 7dvh) 1fr minmax(64px, 21dvh);
       }
 
       header {
@@ -418,60 +396,41 @@
         font-size: clamp(15px, 2vw, 22px);
       }
 
-      .subtitle {
-        display: none;
-      }
-
       .main {
         gap: 7px;
         padding: 7px max(8px, env(safe-area-inset-right)) 7px max(8px, env(safe-area-inset-left));
-        grid-template-columns: 76fr 24fr;
+        grid-template-columns: 77fr 23fr;
       }
 
       .camera-panel,
       .control-panel {
-        border-radius: 12px;
+        border-radius: 13px;
       }
 
       .control-panel {
         padding: 7px;
-        gap: 4px;
-        grid-template-rows: auto auto 1fr auto auto;
-      }
-
-      .selected-label,
-      .hint {
-        display: none;
+        gap: 5px;
+        grid-template-rows: auto 1fr auto auto;
       }
 
       .selected-color {
-        font-size: clamp(20px, 4.3dvh, 34px);
+        font-size: clamp(20px, 4.2dvh, 33px);
       }
 
       .capture-button {
         min-height: 0;
         height: 100%;
-        border-radius: 14px;
-        font-size: clamp(14px, 4.2dvh, 24px);
+        border-radius: 15px;
+        font-size: clamp(14px, 4.1dvh, 24px);
       }
 
       .progress {
-        font-size: clamp(14px, 3.5dvh, 22px);
-      }
-
-      .complete-message {
-        font-size: 11px;
-        min-height: 1.2em;
-      }
-
-      .action-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 5px;
+        font-size: clamp(14px, 3.2dvh, 22px);
       }
 
       .small-button {
         padding: 7px 4px;
-        border-radius: 10px;
+        border-radius: 11px;
         font-size: 11px;
       }
 
@@ -481,19 +440,24 @@
       }
 
       .slot {
-        border-radius: 10px;
+        border-radius: 11px;
       }
 
       .slot.active {
-        transform: translateY(-2px) scale(1.01);
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 0 0 2px rgba(255,255,255,0.88), 0 0 16px rgba(255,255,255,0.32), 0 10px 18px rgba(0,0,0,0.28);
       }
 
       .slot-name {
-        font-size: clamp(14px, 4dvh, 23px);
+        font-size: clamp(14px, 3.7dvh, 22px);
       }
 
       .guide {
         width: min(58dvh, 40vw);
+      }
+
+      .camera-message {
+        display: none;
       }
     }
   </style>
@@ -501,15 +465,13 @@
 <body>
   <div class="portrait-warning" aria-live="polite">
     <div class="portrait-card">
-      <h1>端末を横向きにしてください</h1>
-      <p>「虹を駆ける」は横長画面で遊ぶカメラアプリです。スマホやタブレットを横向きにして、虹の7色を集めてください。</p>
+      <h1>横向きにしてください</h1>
     </div>
   </div>
 
   <main class="app" aria-label="虹を駆ける">
     <header>
       <div class="title">虹を駆ける</div>
-      <div class="subtitle">虹の7色を見つけて撮り集める</div>
     </header>
 
     <section class="main">
@@ -517,26 +479,16 @@
         <video id="video" autoplay playsinline muted></video>
         <div class="guide" aria-hidden="true"></div>
         <div class="camera-placeholder" id="cameraPlaceholder">
-          <button class="start-button" id="startButton" type="button">カメラを起動</button>
-          <p id="cameraMessage">背面カメラを優先して起動します。許可を求められたら、カメラの使用を許可してください。</p>
+          <button class="start-button" id="startButton" type="button">カメラ</button>
+          <p class="camera-message" id="cameraMessage">許可してください</p>
         </div>
       </div>
 
       <aside class="control-panel">
-        <div>
-          <div class="selected-label">選択中</div>
-          <div class="selected-color" id="selectedColor">赤</div>
-        </div>
-        <p class="hint" id="hint">身の回りの赤を見つけて撮影</p>
+        <div class="selected-color" id="selectedColor">赤</div>
         <button class="capture-button" id="captureButton" type="button" disabled>Catch the rainbow!</button>
-        <div>
-          <div class="progress" id="progress">0 / 7</div>
-          <div class="complete-message" id="completeMessage"></div>
-        </div>
-        <div class="action-row">
-          <button class="small-button save" id="saveButton" type="button" disabled>虹画像を保存</button>
-          <button class="small-button" id="resetButton" type="button">もう一度集める</button>
-        </div>
+        <div class="progress" id="progress">0/7</div>
+        <button class="small-button hidden" id="saveButton" type="button">保存</button>
       </aside>
     </section>
 
@@ -549,18 +501,17 @@
 
   <script>
     const colorData = [
-      { name: '赤', hint: '身の回りの赤を見つけて撮影', image: null },
-      { name: '橙', hint: '身の回りの橙を見つけて撮影', image: null },
-      { name: '黄', hint: '身の回りの黄を見つけて撮影', image: null },
-      { name: '緑', hint: '身の回りの緑を見つけて撮影', image: null },
-      { name: '青', hint: '身の回りの青を見つけて撮影', image: null },
-      { name: '藍', hint: '身の回りの藍を見つけて撮影', image: null },
-      { name: '紫', hint: '身の回りの紫を見つけて撮影', image: null }
+      { name: '赤', image: null },
+      { name: '橙', image: null },
+      { name: '黄', image: null },
+      { name: '緑', image: null },
+      { name: '青', image: null },
+      { name: '藍', image: null },
+      { name: '紫', image: null }
     ];
 
     let selectedIndex = 0;
     let stream = null;
-    let completedOnce = false;
     let toastTimer = null;
 
     const video = document.getElementById('video');
@@ -570,11 +521,8 @@
     const startButton = document.getElementById('startButton');
     const captureButton = document.getElementById('captureButton');
     const selectedColor = document.getElementById('selectedColor');
-    const hint = document.getElementById('hint');
     const progress = document.getElementById('progress');
-    const completeMessage = document.getElementById('completeMessage');
     const saveButton = document.getElementById('saveButton');
-    const resetButton = document.getElementById('resetButton');
     const roll = document.getElementById('roll');
     const toast = document.getElementById('toast');
     const captureCanvas = document.getElementById('captureCanvas');
@@ -585,15 +533,13 @@
       colorData.forEach((item, index) => {
         const button = document.createElement('button');
         button.type = 'button';
-        button.className = 'slot' + (index === selectedIndex ? ' active' : '');
-        button.setAttribute('aria-label', item.image ? item.name + 'を撮り直す' : item.name + 'を選択');
+        button.className = 'slot' + (item.image ? ' filled' : '') + (index === selectedIndex ? ' active' : '');
+        button.setAttribute('aria-label', item.name);
 
         if (item.image) {
-          const img = document.createElement('img');
-          img.src = item.image;
-          img.alt = '';
-          button.appendChild(img);
+          button.style.backgroundImage = `url("${item.image}")`;
         } else {
+          button.style.backgroundImage = '';
           const span = document.createElement('span');
           span.className = 'slot-name';
           span.textContent = item.name;
@@ -608,18 +554,17 @@
     function selectColor(index) {
       selectedIndex = index;
       selectedColor.textContent = colorData[selectedIndex].name;
-      hint.textContent = colorData[selectedIndex].hint;
       renderRoll();
     }
 
     async function startCamera() {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        cameraMessage.textContent = 'このブラウザではカメラを使用できません。別のブラウザで開いてください。';
+        cameraMessage.textContent = '非対応ブラウザです';
         return;
       }
 
       startButton.disabled = true;
-      cameraMessage.textContent = 'カメラを起動しています。';
+      cameraMessage.textContent = '起動中';
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -635,17 +580,16 @@
         cameraPlaceholder.classList.add('hidden');
         cameraPanel.classList.add('camera-ready');
         captureButton.disabled = false;
-        showToast('カメラを起動しました');
       } catch (error) {
         console.error(error);
         startButton.disabled = false;
-        cameraMessage.textContent = 'カメラを起動できませんでした。ブラウザの設定でカメラを許可してください。';
+        cameraMessage.textContent = 'カメラを許可してください';
       }
     }
 
     function capturePhoto() {
       if (!stream || !video.videoWidth || !video.videoHeight) {
-        showToast('カメラがまだ準備できていません');
+        showToast('準備中');
         return;
       }
 
@@ -658,19 +602,17 @@
       ctx.clearRect(0, 0, 600, 600);
       ctx.drawImage(video, sx, sy, sourceSize, sourceSize, 0, 0, 600, 600);
 
-      const wasFilled = Boolean(colorData[selectedIndex].image);
       colorData[selectedIndex].image = canvas.toDataURL('image/png');
-      showToast(colorData[selectedIndex].name + (wasFilled ? 'を撮り直しました' : 'を撮りました'));
+      showToast(colorData[selectedIndex].name + ' ✓');
 
-      const becameComplete = isComplete();
+      const complete = isComplete();
       updateState();
 
-      if (becameComplete) {
-        completedOnce = true;
+      if (complete) {
         roll.classList.remove('complete');
         void roll.offsetWidth;
         roll.classList.add('complete');
-        showToast('虹が完成しました');
+        showToast('完成');
       } else {
         moveToNextEmpty();
       }
@@ -697,9 +639,8 @@
 
     function updateState() {
       const count = filledCount();
-      progress.textContent = count + ' / 7';
-      saveButton.disabled = !isComplete();
-      completeMessage.textContent = isComplete() ? '虹が完成しました' : '';
+      progress.textContent = count + '/7';
+      saveButton.classList.toggle('hidden', !isComplete());
       renderRoll();
     }
 
@@ -713,10 +654,7 @@
     }
 
     async function saveRainbowImage() {
-      if (!isComplete()) {
-        showToast('7色すべて集めると保存できます');
-        return;
-      }
+      if (!isComplete()) return;
 
       const ctx = saveCanvas.getContext('2d');
       ctx.clearRect(0, 0, 4200, 600);
@@ -728,7 +666,7 @@
 
       saveCanvas.toBlob(blob => {
         if (!blob) {
-          showToast('画像を作成できませんでした');
+          showToast('保存失敗');
           return;
         }
 
@@ -740,18 +678,8 @@
         a.click();
         a.remove();
         URL.revokeObjectURL(url);
-        showToast('虹画像を保存しました');
+        showToast('保存');
       }, 'image/png');
-    }
-
-    function resetAll() {
-      colorData.forEach(item => { item.image = null; });
-      completedOnce = false;
-      completeMessage.textContent = '';
-      roll.classList.remove('complete');
-      selectColor(0);
-      updateState();
-      showToast('最初から集めます');
     }
 
     function showToast(message) {
@@ -760,13 +688,12 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(() => {
         toast.classList.remove('show');
-      }, 1200);
+      }, 900);
     }
 
     startButton.addEventListener('click', startCamera);
     captureButton.addEventListener('click', capturePhoto);
     saveButton.addEventListener('click', saveRainbowImage);
-    resetButton.addEventListener('click', resetAll);
 
     renderRoll();
     updateState();
