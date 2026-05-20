@@ -7,7 +7,8 @@
   <style>
     :root {
       --bg: #050b1c;
-      --panel: rgba(13, 24, 48, 0.74);
+      --panel: rgba(10, 19, 40, 0.78);
+      --panel-strong: rgba(12, 24, 52, 0.92);
       --line: rgba(255,255,255,0.13);
       --text: #f7f9ff;
       --muted: #aeb8ce;
@@ -74,11 +75,12 @@
       width: 100vw;
       height: 100dvh;
       display: grid;
-      grid-template-rows: minmax(34px, 7dvh) 1fr minmax(72px, 19dvh);
+      grid-template-rows: minmax(32px, 6.5dvh) 1fr minmax(66px, 18dvh);
       background:
         radial-gradient(circle at 13% 14%, rgba(255, 75, 75, 0.09), transparent 26%),
         radial-gradient(circle at 48% 8%, rgba(255, 210, 70, 0.08), transparent 24%),
         radial-gradient(circle at 86% 18%, rgba(88, 126, 255, 0.10), transparent 28%),
+        radial-gradient(circle at 72% 82%, rgba(120, 65, 220, 0.12), transparent 34%),
         linear-gradient(180deg, #08132a 0%, #050b1c 100%);
     }
 
@@ -87,7 +89,7 @@
       display: flex;
       align-items: center;
       padding: env(safe-area-inset-top) max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left));
-      background: rgba(3, 10, 24, 0.68);
+      background: rgba(3, 10, 24, 0.56);
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
 
@@ -104,7 +106,7 @@
 
     .title {
       font-size: clamp(18px, 2vw, 28px);
-      font-weight: 900;
+      font-weight: 950;
       letter-spacing: 0.13em;
       white-space: nowrap;
     }
@@ -112,18 +114,18 @@
     .main {
       min-height: 0;
       display: grid;
-      grid-template-columns: 75fr 25fr;
-      gap: 10px;
+      grid-template-columns: 76fr 24fr;
+      gap: 12px;
       padding: 10px max(12px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left));
     }
 
     .camera-panel,
     .control-panel {
       min-height: 0;
-      border-radius: 20px;
+      border-radius: 24px;
       background: var(--panel);
       border: 1px solid var(--line);
-      box-shadow: 0 22px 48px rgba(0,0,0,0.27);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.34), inset 0 1px 0 rgba(255,255,255,0.05);
       overflow: hidden;
       backdrop-filter: blur(12px);
     }
@@ -161,13 +163,19 @@
     }
 
     .start-button {
-      padding: 15px 32px;
+      padding: 17px 34px;
       border-radius: 999px;
-      background: #f7f9ff;
+      background: linear-gradient(180deg, #ffffff, #dfe7ff);
       color: #071126;
-      font-size: clamp(16px, 1.7vw, 22px);
-      font-weight: 900;
-      box-shadow: 0 16px 36px rgba(0,0,0,0.36);
+      font-size: clamp(15px, 1.55vw, 21px);
+      font-weight: 950;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.42), inset 0 0 0 1px rgba(255,255,255,0.85);
+    }
+
+    .start-button::before {
+      content: "◉";
+      margin-right: 0.55em;
+      font-size: 0.95em;
     }
 
     .camera-message {
@@ -178,8 +186,8 @@
       margin: 0;
       color: rgba(255,255,255,0.72);
       text-align: center;
-      font-size: 13px;
-      line-height: 1.5;
+      font-size: clamp(11px, 1vw, 13px);
+      line-height: 1.45;
     }
 
     .guide {
@@ -221,51 +229,111 @@
     }
 
     .control-panel {
-      padding: clamp(10px, 1.6vw, 22px);
+      padding: clamp(10px, 1.55vw, 20px);
       display: grid;
       grid-template-rows: auto 1fr auto auto;
-      gap: clamp(8px, 1.3vw, 16px);
+      gap: clamp(8px, 1.15vw, 15px);
       align-items: center;
       text-align: center;
+      background:
+        linear-gradient(180deg, rgba(17,31,64,0.78), rgba(6,15,34,0.86)),
+        var(--panel-strong);
     }
 
     .selected-color {
-      font-size: clamp(30px, 5vw, 58px);
+      justify-self: center;
+      width: min(92px, 42%);
+      aspect-ratio: 1 / 1;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: clamp(24px, 3.7vw, 46px);
       font-weight: 950;
       line-height: 1;
-      text-shadow: 0 10px 28px rgba(0,0,0,0.38);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 12px 32px rgba(0,0,0,0.28);
+      text-shadow: 0 8px 22px rgba(0,0,0,0.42);
     }
 
     .capture-button {
+      position: relative;
       width: 100%;
       height: 100%;
-      min-height: clamp(76px, 22dvh, 190px);
-      padding: 12px 10px;
-      border-radius: 25px;
+      min-height: clamp(84px, 23dvh, 198px);
+      padding: 48px 12px 16px;
+      border-radius: 30px;
       background:
-        linear-gradient(#f8fbff, #e1e8ff) padding-box,
-        linear-gradient(135deg, rgba(255,255,255,1), rgba(120,160,255,0.55)) border-box;
-      border: 1px solid transparent;
+        radial-gradient(circle at 50% 22%, rgba(255,255,255,1) 0 21px, rgba(210,221,255,0.92) 22px 28px, transparent 29px),
+        linear-gradient(180deg, #ffffff 0%, #e7edff 58%, #cdd8ff 100%) padding-box,
+        linear-gradient(135deg, rgba(255,255,255,1), rgba(122,160,255,0.72), rgba(255,255,255,0.75)) border-box;
+      border: 2px solid transparent;
       color: #071126;
-      font-size: clamp(20px, 2.85vw, 40px);
+      font-size: clamp(18px, 2.45vw, 34px);
       font-weight: 950;
-      line-height: 1.08;
-      box-shadow: 0 20px 42px rgba(0,0,0,0.36), inset 0 0 0 1px rgba(255,255,255,0.74);
-      transition: transform 0.08s ease, box-shadow 0.14s ease, opacity 0.14s ease;
+      line-height: 1.05;
+      box-shadow:
+        0 24px 46px rgba(0,0,0,0.42),
+        0 0 0 5px rgba(255,255,255,0.06),
+        inset 0 2px 0 rgba(255,255,255,0.95),
+        inset 0 -8px 18px rgba(32, 56, 120, 0.18);
+      transition: transform 0.08s ease, box-shadow 0.14s ease, opacity 0.14s ease, filter 0.14s ease;
+    }
+
+    .capture-button::before {
+      content: "";
+      position: absolute;
+      top: 17px;
+      left: 50%;
+      width: 43px;
+      height: 43px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #071126;
+      box-shadow: inset 0 0 0 10px #eef3ff, 0 3px 10px rgba(0,0,0,0.28);
+    }
+
+    .capture-button::after {
+      content: "TAP";
+      position: absolute;
+      top: 15px;
+      right: 17px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(7,17,38,0.10);
+      color: rgba(7,17,38,0.58);
+      font-size: clamp(10px, 0.9vw, 12px);
+      font-weight: 950;
+      letter-spacing: 0.08em;
     }
 
     .capture-button:active:not(:disabled) {
-      transform: scale(0.965);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.32), inset 0 0 0 1px rgba(255,255,255,0.74);
+      transform: translateY(3px) scale(0.975);
+      box-shadow:
+        0 14px 28px rgba(0,0,0,0.35),
+        0 0 0 4px rgba(255,255,255,0.05),
+        inset 0 2px 0 rgba(255,255,255,0.95),
+        inset 0 -5px 14px rgba(32, 56, 120, 0.20);
+      filter: brightness(0.99);
     }
 
     .capture-button:disabled {
-      opacity: 0.42;
+      opacity: 0.38;
       cursor: not-allowed;
     }
 
+    .capture-button.flash {
+      animation: shutterFlash 0.34s ease;
+    }
+
+    @keyframes shutterFlash {
+      0% { filter: brightness(1); }
+      34% { filter: brightness(1.35); }
+      100% { filter: brightness(1); }
+    }
+
     .progress {
-      font-size: clamp(18px, 2.2vw, 34px);
+      font-size: clamp(16px, 1.85vw, 28px);
       font-weight: 900;
       letter-spacing: 0.04em;
     }
@@ -274,7 +342,7 @@
       width: 100%;
       padding: clamp(9px, 1.25vw, 14px) 8px;
       border-radius: 16px;
-      background: linear-gradient(145deg, #266348, #183d2b);
+      background: linear-gradient(145deg, #3ac07a, #1f6d49);
       border: 1px solid rgba(169,255,209,0.38);
       color: var(--text);
       font-size: clamp(13px, 1.2vw, 17px);
@@ -290,9 +358,9 @@
     .roll {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
+      gap: 9px;
       padding: 8px max(12px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
-      background: rgba(3, 10, 24, 0.80);
+      background: rgba(3, 10, 24, 0.84);
       border-top: 1px solid rgba(255,255,255,0.08);
     }
 
@@ -301,23 +369,33 @@
       min-width: 0;
       min-height: 0;
       height: 100%;
-      border-radius: 17px;
+      padding: 0;
+      border-radius: 18px;
       border: 1px solid var(--slot-border);
-      background: var(--slot);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02)),
+        var(--slot);
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 9px 20px rgba(0,0,0,0.22);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08), 0 10px 24px rgba(0,0,0,0.27);
       transform: translateY(0) scale(1);
       transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease, filter 0.14s ease;
     }
 
+    .slot-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.01);
+    }
+
     .slot.filled {
-      border-color: rgba(255,255,255,0.18);
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      border-color: rgba(255,255,255,0.20);
       filter: brightness(1.06) contrast(1.04);
     }
 
@@ -334,7 +412,7 @@
     }
 
     .slot-name {
-      font-size: clamp(16px, 2vw, 31px);
+      font-size: clamp(15px, 1.85vw, 28px);
       font-weight: 950;
       color: #f5f7ff;
       letter-spacing: 0.08em;
@@ -348,6 +426,32 @@
       0% { box-shadow: inset 0 0 0 rgba(255,255,255,0); }
       45% { box-shadow: inset 0 0 76px rgba(255,255,255,0.23); }
       100% { box-shadow: inset 0 0 0 rgba(255,255,255,0); }
+    }
+
+    .flying-photo {
+      position: fixed;
+      z-index: 30;
+      object-fit: cover;
+      pointer-events: none;
+      border-radius: 18px;
+      box-shadow: 0 26px 70px rgba(0,0,0,0.48), 0 0 0 2px rgba(255,255,255,0.75);
+      transition: left 0.54s cubic-bezier(.2,.85,.2,1), top 0.54s cubic-bezier(.2,.85,.2,1), width 0.54s cubic-bezier(.2,.85,.2,1), height 0.54s cubic-bezier(.2,.85,.2,1), border-radius 0.54s cubic-bezier(.2,.85,.2,1), opacity 0.54s ease;
+    }
+
+    .camera-panel.flash::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      background: rgba(255,255,255,0.28);
+      animation: cameraFlash 0.22s ease forwards;
+    }
+
+    @keyframes cameraFlash {
+      0% { opacity: 0; }
+      35% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     .toast {
@@ -420,8 +524,20 @@
       .capture-button {
         min-height: 0;
         height: 100%;
-        border-radius: 15px;
-        font-size: clamp(14px, 4.1dvh, 24px);
+        border-radius: 17px;
+        padding: 36px 8px 10px;
+        font-size: clamp(13px, 3.75dvh, 22px);
+      }
+
+      .capture-button::before {
+        top: 9px;
+        width: 31px;
+        height: 31px;
+        box-shadow: inset 0 0 0 7px #eef3ff, 0 2px 8px rgba(0,0,0,0.28);
+      }
+
+      .capture-button::after {
+        display: none;
       }
 
       .progress {
@@ -479,8 +595,8 @@
         <video id="video" autoplay playsinline muted></video>
         <div class="guide" aria-hidden="true"></div>
         <div class="camera-placeholder" id="cameraPlaceholder">
-          <button class="start-button" id="startButton" type="button">カメラ</button>
-          <p class="camera-message" id="cameraMessage">許可してください</p>
+          <button class="start-button" id="startButton" type="button">カメラを使う</button>
+          <p class="camera-message" id="cameraMessage">虹の色を撮るためにカメラを使用します</p>
         </div>
       </div>
 
@@ -513,6 +629,7 @@
     let selectedIndex = 0;
     let stream = null;
     let toastTimer = null;
+    let isCapturing = false;
 
     const video = document.getElementById('video');
     const cameraPanel = document.getElementById('cameraPanel');
@@ -524,6 +641,7 @@
     const progress = document.getElementById('progress');
     const saveButton = document.getElementById('saveButton');
     const roll = document.getElementById('roll');
+    const guide = document.querySelector('.guide');
     const toast = document.getElementById('toast');
     const captureCanvas = document.getElementById('captureCanvas');
     const saveCanvas = document.getElementById('saveCanvas');
@@ -537,9 +655,12 @@
         button.setAttribute('aria-label', item.name);
 
         if (item.image) {
-          button.style.backgroundImage = `url("${item.image}")`;
+          const img = document.createElement('img');
+          img.className = 'slot-img';
+          img.src = item.image;
+          img.alt = '';
+          button.appendChild(img);
         } else {
-          button.style.backgroundImage = '';
           const span = document.createElement('span');
           span.className = 'slot-name';
           span.textContent = item.name;
@@ -564,7 +685,7 @@
       }
 
       startButton.disabled = true;
-      cameraMessage.textContent = '起動中';
+      cameraMessage.textContent = 'カメラ起動中';
 
       try {
         stream = await navigator.mediaDevices.getUserMedia({
@@ -583,15 +704,25 @@
       } catch (error) {
         console.error(error);
         startButton.disabled = false;
-        cameraMessage.textContent = 'カメラを許可してください';
+        cameraMessage.textContent = 'ブラウザでカメラを許可してください';
       }
     }
 
-    function capturePhoto() {
+    async function capturePhoto() {
+      if (isCapturing) return;
       if (!stream || !video.videoWidth || !video.videoHeight) {
         showToast('準備中');
         return;
       }
+
+      isCapturing = true;
+      captureButton.disabled = true;
+      captureButton.classList.remove('flash');
+      void captureButton.offsetWidth;
+      captureButton.classList.add('flash');
+      cameraPanel.classList.remove('flash');
+      void cameraPanel.offsetWidth;
+      cameraPanel.classList.add('flash');
 
       const canvas = captureCanvas;
       const ctx = canvas.getContext('2d');
@@ -602,8 +733,13 @@
       ctx.clearRect(0, 0, 600, 600);
       ctx.drawImage(video, sx, sy, sourceSize, sourceSize, 0, 0, 600, 600);
 
-      colorData[selectedIndex].image = canvas.toDataURL('image/png');
-      showToast(colorData[selectedIndex].name + ' ✓');
+      const dataUrl = canvas.toDataURL('image/png');
+      const capturedIndex = selectedIndex;
+
+      await animatePhotoToSlot(dataUrl, capturedIndex);
+
+      colorData[capturedIndex].image = dataUrl;
+      showToast(colorData[capturedIndex].name + ' ✓');
 
       const complete = isComplete();
       updateState();
@@ -614,19 +750,64 @@
         roll.classList.add('complete');
         showToast('完成');
       } else {
-        moveToNextEmpty();
+        moveToNextEmptyFrom(capturedIndex);
       }
+
+      isCapturing = false;
+      captureButton.disabled = !stream;
+    }
+
+    function animatePhotoToSlot(dataUrl, targetIndex) {
+      return new Promise(resolve => {
+        const target = roll.children[targetIndex];
+        if (!target) {
+          resolve();
+          return;
+        }
+
+        const startRect = guide.getBoundingClientRect();
+        const endRect = target.getBoundingClientRect();
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        img.className = 'flying-photo';
+        img.style.left = startRect.left + 'px';
+        img.style.top = startRect.top + 'px';
+        img.style.width = startRect.width + 'px';
+        img.style.height = startRect.height + 'px';
+        document.body.appendChild(img);
+
+        requestAnimationFrame(() => {
+          img.style.left = endRect.left + 'px';
+          img.style.top = endRect.top + 'px';
+          img.style.width = endRect.width + 'px';
+          img.style.height = endRect.height + 'px';
+          img.style.borderRadius = getComputedStyle(target).borderRadius;
+          img.style.opacity = '0.96';
+        });
+
+        const finish = () => {
+          img.removeEventListener('transitionend', finish);
+          img.remove();
+          resolve();
+        };
+        img.addEventListener('transitionend', finish);
+        setTimeout(finish, 680);
+      });
     }
 
     function moveToNextEmpty() {
+      moveToNextEmptyFrom(selectedIndex);
+    }
+
+    function moveToNextEmptyFrom(index) {
       for (let step = 1; step <= colorData.length; step++) {
-        const next = (selectedIndex + step) % colorData.length;
+        const next = (index + step) % colorData.length;
         if (!colorData[next].image) {
           selectColor(next);
           return;
         }
       }
-      selectColor(selectedIndex);
+      selectColor(index);
     }
 
     function filledCount() {
